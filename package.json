@@ -1,0 +1,10 @@
+{
+  "name": "mern-template",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "npm install && node server.js"
+  },
+  "dependencies": {
+    "mongoose": "^4.7.0"
+  }
+}
