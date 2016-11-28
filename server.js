@@ -22,8 +22,6 @@ var startApplicationServer = function() {
 var dbURI = 'mongodb://mongo/';
 var db = mongoose.connection;
 
-mongoose.connect(dbURI, {server:{auto_reconnect:true}});
-
 db.on('connecting', function() {
     console.log('connecting to MongoDB...');
 });
@@ -36,19 +34,19 @@ db.on('error', function(error) {
 db.on('connected', function() {
   console.log('MongoDB connected!');
 });
-//
-// db.once('open', function() {
-//   console.log('MongoDB connection opened!');
-//   startApplicationServer();
-// });
-//
-// db.on('reconnected', function () {
-//   console.log('MongoDB reconnected!');
-// });
-//
-// db.on('disconnected', function() {
-//   console.log('MongoDB disconnected!');
-//   mongoose.connect(dbURI, {server:{auto_reconnect:true}});
-// });
-//
-// mongoose.connect(dbURI, {server:{auto_reconnect:true}});
+
+db.once('open', function() {
+  console.log('MongoDB connection opened!');
+  startApplicationServer();
+});
+
+db.on('reconnected', function () {
+  console.log('MongoDB reconnected!');
+});
+
+db.on('disconnected', function() {
+  console.log('MongoDB disconnected!');
+  mongoose.connect(dbURI, {server:{auto_reconnect:true}});
+});
+
+mongoose.connect(dbURI, {server:{auto_reconnect:true}});
