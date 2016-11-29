@@ -2,9 +2,20 @@
   "name": "mern-template",
   "version": "1.0.0",
   "scripts": {
-    "start": "npm install && node server.js"
+    "start": "npm install && nodemon --config nodemon.json server.js"
   },
   "dependencies": {
-    "mongoose": "^4.7.0"
+    "browser-sync": "^2.18.2",
+    "browserify": "^13.1.1",
+    "del": "^2.2.2",
+    "gulp": "^3.9.1",
+    "gulp-browserify": "^0.5.1",
+    "gulp-clean-css": "^2.0.13",
+    "gulp-sourcemaps": "^1.9.1",
+    "gulp-uglify": "^2.0.0",
+    "gulp-util": "^3.0.7",
+    "mongoose": "^4.7.0",
+    "nodemon": "^1.11.0",
+    "uglify": "^0.1.5"
   }
 }
