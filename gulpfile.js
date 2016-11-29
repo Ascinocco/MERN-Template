@@ -1,30 +1,34 @@
 var gulp        = require('gulp');
 var uglify      = require('gulp-uglify');
 var concat      = require('gulp-concat');
+var nodemon     = require('gulp-nodemon');
 var cleanCSS    = require('gulp-clean-css');
-var imagemin    = require('gulp-imagemin');
 var sourcemaps  = require('gulp-sourcemaps');
 var browserify  = require('gulp-browserify');
-var browserSync = require('browser-sync').create();
 var del         = require('del');
 
-// --------------------- Delete CSS and JS ------------------------------
-gulp.task('del-js', function(){
-  del.sync(['public/js/**/*.js', '!public/js']);
-});
-
-gulp.task('del-css', function(){
+var deleteCss = function(){
   del.sync(['public/css/**/*.css', '!public/css']);
-});
+};
 
-gulp.task('del-img', function(){
+var deleteJs = function(){
+  del.sync(['public/js/**/*.js', '!public/js']);
+};
+
+var deleteImg = function(){
   del.sync(['public/img/**/*.*', '!public/img']);
-});
-// ----------------------------------------------------------------------
+};
 
-// --------------- Tasks to run against js and css ----------------------
-// grab all client side js and put it into pub dir
-gulp.task('js', ['del-js'], function(){
+var processCss = function(){
+  return gulp.src('app/views/**/*.css')
+    .pipe(sourcemaps.init())
+    .pipe(cleanCSS())
+    .pipe(concat('styles.min.css'))
+    .pipe(sourcemaps.write())
+    .pipe(gulp.dest('public/css'));
+};
+
+var processJs = function(){
   return gulp.src('app/views/**/*.js')
     .pipe(sourcemaps.init())
     .pipe(browserify())
@@ -32,50 +36,52 @@ gulp.task('js', ['del-js'], function(){
     .pipe(concat('start.min.js'))
     .pipe(sourcemaps.write())
     .pipe(gulp.dest('public/js'));
-});
+};
 
-// css and put it into pub dir
-gulp.task('css', ['del-css'], function(){
-  return gulp.src('app/views/**/*.css')
-    .pipe(sourcemaps.init())
-    .pipe(cleanCSS())
-    .pipe(concat('styles.min.css'))
-    .pipe(sourcemaps.write())
-    .pipe(gulp.dest('public/css'));
-});
-
-// optimize images and output them to public
-gulp.task('img', ['del-img'], function(){
-  return gulp.src('app/views/**/*.{png, jpeg, gif, svg}')
-    .pipe(imagemin())
+var processImg = function(){
+  return gulp.src('app/views/**/*.{png,jpg,svg,gif}')
     .pipe(gulp.dest('public/img'));
-});
-// -----------------------------------------------------------------------
+};
 
-// ------------------ Browser Sync watchers ------------------------------
-// make sure js processing is complete before reloading browser
-gulp.task('js-watch', ['js'], function(done){
-  browserSync.reload();
-  done();
+var runCss = function(){
+  deleteCss();
+  processCss();
+};
+
+var runJs = function(){
+  deleteJs();
+  processJs();
+};
+
+var runImg = function(){
+  deleteImg();
+  processImg();
+}
+
+gulp.task('server', function(){
+  nodemon({
+    script: 'server.js',
+    ext: 'js css html',
+    ignore: [
+      'public/**/*.*',
+      'gulpfile.js',
+      'docker-compose.yml',
+      'package.json',
+      '.gitignore',
+      '.editorconfig',
+      '.git',
+      'README.md',
+      'node_modules'
+    ]
+  }).on('start', function(){
+    runCss();
+    runJs();
+    runImg();
+  }).on('restart', function(){
+    runCss();
+    runJs();
+    runImg();
+  });
 });
 
-
-//make sure css processing us complete before reloading browserify
-gulp.task('css-watch', ['css'], function(done){
-  browserSync.reload();
-  done();
-});
-
-// reload browser with new images
-gulp.task('img-watch', ['img'], function(done){
-  browserSync.reload();
-  done();
-});
-// -----------------------------------------------------------------------
-
-// run watchers
-gulp.task('default', ['js', 'css', 'img'], function(){
-  gulp.watch("app/views/**/*.js", ['js-watch']);
-  gulp.watch("app/views/**/*.css", ['css-watch']);
-  gulp.watch("app/views/**/*.{png,jpeg, gif, svg}", ['img-watch']);
-});
+gulp.task('default', ['server']);
