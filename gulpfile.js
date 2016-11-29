@@ -19,6 +19,10 @@ var deleteImg = function(){
   del.sync(['public/img/**/*.*', '!public/img']);
 };
 
+var deleteHtml = function(){
+  del.sync(['public/html/**/*.*', '!public/html']);
+};
+
 var processCss = function(){
   return gulp.src('app/views/**/*.css')
     .pipe(sourcemaps.init())
@@ -43,6 +47,11 @@ var processImg = function(){
     .pipe(gulp.dest('public/img'));
 };
 
+var processHtml = function(){
+  return gulp.src('app/views/**/*.html')
+    .pipe(gulp.dest('public/html'));
+};
+
 var runCss = function(){
   deleteCss();
   processCss();
@@ -52,6 +61,11 @@ var runJs = function(){
   deleteJs();
   processJs();
 };
+
+var runHtml = function(){
+  deleteHtml();
+  processHtml();
+}
 
 var runImg = function(){
   deleteImg();
@@ -77,10 +91,12 @@ gulp.task('server', function(){
     runCss();
     runJs();
     runImg();
+    runHtml();
   }).on('restart', function(){
     runCss();
     runJs();
     runImg();
+    runHtml();
   });
 });
 
