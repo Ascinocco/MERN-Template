@@ -23,6 +23,10 @@ var deleteHtml = function(){
   del.sync(['public/html/**/*.*', '!public/html']);
 };
 
+var deleteFavicon = function(){
+  del.sync(['public/favicon/*.ico', '!public/favicon']);
+};
+
 var processCss = function(){
   return gulp.src('client/**/*.css')
     .pipe(sourcemaps.init())
@@ -52,6 +56,11 @@ var processHtml = function(){
     .pipe(gulp.dest('public/html'));
 };
 
+var processFavicon = function(){
+  return gulp.src('client/favicon/*.ico')
+    .pipe(gulp.dest('public/favicon'));
+};
+
 var runCss = function(){
   deleteCss();
   processCss();
@@ -65,12 +74,17 @@ var runJs = function(){
 var runHtml = function(){
   deleteHtml();
   processHtml();
-}
+};
 
 var runImg = function(){
   deleteImg();
   processImg();
-}
+};
+
+var runFavicon = function(){
+  deleteFavicon();
+  processFavicon();
+};
 
 gulp.task('server', function(){
   nodemon({
@@ -92,11 +106,13 @@ gulp.task('server', function(){
     runJs();
     runImg();
     runHtml();
+    runFavicon();
   }).on('restart', function(){
     runCss();
     runJs();
     runImg();
     runHtml();
+    runFavicon();
   });
 });
 
