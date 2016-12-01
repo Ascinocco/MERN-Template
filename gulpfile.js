@@ -37,7 +37,7 @@ var processJs = function(){
     .pipe(sourcemaps.init())
     .pipe(browserify())
     .pipe(uglify())
-    .pipe(concat('start.min.js'))
+    .pipe(concat('mern-starter.min.js'))
     .pipe(sourcemaps.write())
     .pipe(gulp.dest('public/js'));
 };
