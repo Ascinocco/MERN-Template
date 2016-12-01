@@ -24,7 +24,7 @@ var deleteHtml = function(){
 };
 
 var processCss = function(){
-  return gulp.src('app/views/**/*.css')
+  return gulp.src('client/**/*.css')
     .pipe(sourcemaps.init())
     .pipe(cleanCSS())
     .pipe(concat('styles.min.css'))
@@ -33,7 +33,7 @@ var processCss = function(){
 };
 
 var processJs = function(){
-  return gulp.src('app/views/**/*.js')
+  return gulp.src('client/**/*.js')
     .pipe(sourcemaps.init())
     .pipe(browserify())
     .pipe(uglify())
@@ -43,12 +43,12 @@ var processJs = function(){
 };
 
 var processImg = function(){
-  return gulp.src('app/views/**/*.{png,jpg,svg,gif}')
+  return gulp.src('client/**/*.{png,jpg,svg,gif}')
     .pipe(gulp.dest('public/img'));
 };
 
 var processHtml = function(){
-  return gulp.src('app/views/**/*.html')
+  return gulp.src('client/**/*.html')
     .pipe(gulp.dest('public/html'));
 };
 
@@ -74,7 +74,7 @@ var runImg = function(){
 
 gulp.task('server', function(){
   nodemon({
-    script: 'server.js',
+    script: './server/server.js',
     ext: 'js css html',
     ignore: [
       'public/**/*.*',
